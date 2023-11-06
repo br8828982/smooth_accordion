@@ -5,8 +5,12 @@
     .accordion-content {
       display: none;
       height: 0;
+      opacity: 0;
       overflow: hidden;
-      transition: height 0.3s;
+      transition: all 0.3s;
+    }
+    .accordion-item.active > .accordion-content {
+      opacity: 1;
     }
   </style>
 </head>
@@ -41,13 +45,14 @@
   </div>
 
   <script>
-    document.addEventListener('click', (e) => {
-      const target = e.target;
-      const item = target.closest('.accordion-item');
-      const button = target.closest('.accordion-button');
-      if (item && button) {
+    const items = document.querySelectorAll('.accordion-item');
+    let isOpen = false;
+
+    items.forEach(item => {
+      const button = item.querySelector('.accordion-button');
+      button.addEventListener('click', () => {
         toggleAccordionItem(item);
-      }
+      });
     });
 
     function toggleAccordionItem(item) {
@@ -59,10 +64,17 @@
     }
 
     function show(item) {
-      hideAll(item);
+      const accordion = item.closest('.accordion');
+      const allowMultiple = accordion.hasAttribute("data-allow-multiple");
+
+      if (!allowMultiple) {
+        hideAll(accordion);
+      }
+
       item.classList.add('active');
       const content = item.querySelector('.accordion-content');
       content.style.display = 'block';
+      content.style.overflow = 'hidden';
 
       requestAnimationFrame(() => {
         content.style.height = `${content.scrollHeight}px`;
@@ -71,11 +83,13 @@
       content.addEventListener('transitionend', () => {
         if (!item.classList.contains('active')) return;
         content.style.height = 'auto';
+        content.style.overflow = 'visible';
       });
     }
 
     function hide(item) {
       const content = item.querySelector('.accordion-content');
+      content.style.overflow = 'hidden';
       content.style.height = `${content.scrollHeight}px`;
 
       requestAnimationFrame(() => {
@@ -90,13 +104,10 @@
       item.classList.remove('active');
     }
 
-    function hideAll(item) {
-      const accordion = item.closest('.accordion');
-      const itemsToClose = accordion.querySelectorAll('.accordion-item');
-      itemsToClose.forEach((el) => {
-        if (item !== el) {
-          hide(el);
-        }
+    function hideAll(accordion) {
+      const activeItems = accordion.querySelectorAll('.accordion-item');
+      activeItems.forEach((el) => {
+        hide(el);
       });
     }
   </script>
