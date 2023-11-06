@@ -53,11 +53,9 @@
       });
 
       function toggle(item) {
-        if (item.classList.contains('active')) {
-          hide(item);
-        } else {
-          show(item);
-        }
+        if (!item.classList.contains('active')) return show(item);
+        
+        hide(item)
       }
 
       function show(item) {
