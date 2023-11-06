@@ -4,7 +4,6 @@
     <style>
       .accordion-content {
         display: none;
-        height: 0;
         opacity: 0;
         overflow: hidden;
         transition: all 0.3s;
@@ -68,7 +67,6 @@
         item.classList.add('active');
         const content = item.querySelector('.accordion-content');
         content.style.display = 'block';
-        content.style.overflow = 'hidden';
 
         requestAnimationFrame(() => {
           content.style.height = `${content.scrollHeight}px`;
